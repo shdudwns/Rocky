@@ -14,7 +14,7 @@ before_script:
  - pecl install channel://pecl.php.net/weakref-0.3.2
  - echo | pecl install channel://pecl.php.net/yaml-2.0.0
  - chmod 777 ./tests/travis.sh
- - wget -O plugins/DevTools.phar https://github.com/PocketMine/DevTools/releases/download/v1.11.0/DevTools_v1.11.0.phar
+ - wget -O plugins/DevTools.phar https://github.com/pmmp/PocketMine-DevTools/releases/download/v1.11.3/DevTools_v1.11.3.phar
 
 script:
  - ./tests/travis.sh

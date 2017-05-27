@@ -1,5 +1,3 @@
-
-## We have opened up our new official RockyForums, click [here](http://rockysoft.ml/index.php)
 # ![Rocky](http://i.imgur.com/hsukstv.jpg)
 ![Status](https://img.shields.io/badge/stability-alpha-ff69b4.svg)<br>
 ![GitHub contributors](https://img.shields.io/github/contributors/BlackLight-NL/Rocky.svg)<br>
@@ -13,9 +11,8 @@
 
 ## Builds
 
-CodeShip: [![CodeShip](https://img.shields.io/codeship/a61004a0-195b-0135-1c78-56843184a771.svg?style=flat-square)](https://app.codeship.com/projects/219260)<br>
-TravisCI: [![TravisCI](https://travis-ci.org/RockySoftware/Rocky.svg?branch=master)](https://travis-ci.org/RockySoftware/Rocky)<br>
-CircleCI: [![CircleCI](https://img.shields.io/circleci/project/github/RockySoftware/Rocky.svg?style=flat-square)](https://circleci.com/gh/RockySoftware/Rocky)<br>
+TravisCI: [![TravisCI](https://travis-ci.org/RockySoftware-eng/Rocky.svg?branch=master)](https://travis-ci.org/RockySoftware-eng/Rocky)<br>
+CircleCI: [![CircleCI](https://img.shields.io/circleci/project/github/RockySoftware-eng/Rocky.svg?style=flat-square)](https://circleci.com/gh/RockySoftware-eng/Rocky)<br>
 
 ## Installation
 
@@ -55,10 +52,10 @@ You need to request the hosting company you're using to add in Rocky as a server
 * __[Contributing Guidelines: Coming Soon](#)__
 
 **Contact and Social**
-* __[Forums](http://rockysoft.ml/index.php)__
+* __[Forums: Coming Soon](#)__
 * __[Gitter Chat: Coming Soon](#)__
 * __[Official Twitter Account: Coming Soon](#)__
-* __[Discord Chat](https://discord.gg/M4GFyfy)__
+* __[Discord Chat: Coming Soon](#)__
 
 ## Features
 - Little to no lag at all!

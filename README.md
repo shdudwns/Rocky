@@ -11,7 +11,7 @@
 
 ## Builds
 TravisCI: [![TravisCI](https://travis-ci.org/RockySoftware-eng/Rocky.svg?branch=master)](https://travis-ci.org/RockySoftware-eng/Rocky)<br>
-CircleCI: [![CircleCI](https://img.shields.io/circleci/project/github/RockySoftware-eng/Rocky.svg?style=flat-square)](https://circleci.com/gh/RockySoftware-eng/Rocky)<br>
+CircleCI: [![CircleCI](https://circleci.com/gh/RockyTeam-eng/Rocky.svg?style=flat-square)](https://circleci.com/gh/RockyTeam-eng/Rocky)<br>
 
 ## Installation
 

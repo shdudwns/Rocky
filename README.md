@@ -1,5 +1,5 @@
 # ![Rocky](http://i.imgur.com/hsukstv.jpg)
-![Status](https://img.shields.io/badge/stability-alpha-ff69b4.svg)<br>
+![Status](https://img.shields.io/badge/stability-beta-ff69b4.svg)<br>
 ![GitHub contributors](https://img.shields.io/github/contributors/BlackLight-NL/Rocky.svg)<br>
 ## Information
 

@@ -11,7 +11,7 @@
 
 ## Builds
 TravisCI: [![TravisCI](https://travis-ci.org/RockySoftware-eng/Rocky.svg)](https://travis-ci.org/RockySoftware-eng/Rocky)<br>
-CircleCI: [![CircleCI](https://circleci.com/gh/RockyTeam-eng/Rocky.svg?style=flat-square)](https://circleci.com/gh/RockyTeam-eng/Rocky)<br>
+[![CircleCI](https://circleci.com/gh/RockyTeam-eng/Rocky/tree/master.svg?style=svg)](https://circleci.com/gh/RockyTeam-eng/Rocky/tree/master)<br>
 
 ## Installation
 
@@ -54,7 +54,7 @@ You need to request the hosting company you're using to add in Rocky as a server
 * __[Forums: Coming Soon](#)__
 * __[Gitter Chat: Coming Soon](#)__
 * __[Official Twitter Account: Coming Soon](#)__
-* __[Discord Chat](https://discord.gg/jm7PQ2H)
+* __[Discord Chat](https://discord.gg/jm7PQ2H)(#)__
 
 ## Features
 - Little to no lag at all!

@@ -1,9 +1,9 @@
 # ![Rocky](http://i.imgur.com/hsukstv.jpg)
 ![Status](https://img.shields.io/badge/stability-beta-ff69b4.svg)<br>
-![GitHub contributors](https://img.shields.io/github/contributors/BlackLight-NL/Rocky.svg)<br>
+![GitHub contributors](https://img.shields.io/github/contributors/RockyTeam-eng/Rocky.svg)<br>
 ## Information
 
-- This is alpha software, you will experience bugs and crashes. You can see our progress [here](https://github.com/RockySoftware/Rocky/milestones)
+- This is beta software, you will experience bugs and crashes. You can see our progress [here](https://github.com/RockySoftware/Rocky/milestones)
 - You can make a pull-request if you want to help.
 - We currently are not accepting any more helpers
 - We are not Arufa, we are a replacment!

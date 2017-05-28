@@ -118,6 +118,7 @@ class Block extends Position implements BlockIds, Metadatable{
 			self::$list[self::BRICKS_BLOCK] = Bricks::class;
 			self::$list[self::TNT] = TNT::class;
 			self::$list[self::BOOKSHELF] = Bookshelf::class;
+			//self::$list[self::NOTE_BLOCK] = NoteBlock::class;
 			self::$list[self::MOSS_STONE] = MossStone::class;
 			self::$list[self::OBSIDIAN] = Obsidian::class;
 			self::$list[self::TORCH] = Torch::class;
@@ -212,7 +213,7 @@ class Block extends Position implements BlockIds, Metadatable{
 			self::$list[self::EMERALD_BLOCK] = Emerald::class;
 			self::$list[self::SPRUCE_WOOD_STAIRS] = SpruceWoodStairs::class;
 			self::$list[self::BIRCH_WOOD_STAIRS] = BirchWoodStairs::class;
-			self::$list[self::JUNGLE_WOOD_STAIRS] = JungleWoodStairs::class;
+			self::$list[self::JUNGLE_WOOD_STAIRS] = JungleWoodStairs::class; //self::NOTE_BLOCK
 			self::$list[self::BEACON] = Beacon::class;
 			self::$list[self::STONE_WALL] = StoneWall::class;
 
@@ -277,7 +278,7 @@ class Block extends Position implements BlockIds, Metadatable{
 			self::$list[self::LEVER] = Lever::class;
 			self::$list[self::DAYLIGHT_SENSOR] = DaylightDetector::class;
 			self::$list[self::DAYLIGHT_SENSOR_INVERTED] = DaylightDetectorInverted::class;
-			self::$list[self::NOTEBLOCK] = Noteblock::class;
+		//	self::$list[self::NOTE_BLOCK] = Noteblock::class;
 			self::$list[self::SKULL_BLOCK] = SkullBlock::class;
 			self::$list[self::NETHER_QUARTZ_ORE] = NetherQuartzOre::class;
 			self::$list[self::ACTIVATOR_RAIL] = ActivatorRail::class;

@@ -1,25 +1,20 @@
 <?php
 
 /*
- *   ____  _            _      _       _     _
- *  |  _ \| |          | |    (_)     | |   | |
- *  | |_) | |_   _  ___| |     _  __ _| |__ | |_
- *  |  _ <| | | | |/ _ \ |    | |/ _` | '_ \| __|
- *  | |_) | | |_| |  __/ |____| | (_| | | | | |_
- *  |____/|_|\__,_|\___|______|_|\__, |_| |_|\__|
- *                                __/ |
- *                               |___/
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @author BlueLightJapan Team
+ * @author SuperXingKong
  * 
+ *
  */
-
  
 namespace pocketmine\block;
+
+use pocketmine\block\Block;
+use pocketmine\block\Solid;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\nbt\tag\CompoundTag;
@@ -28,7 +23,9 @@ use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\tile\Tile;
 use pocketmine\tile\Beacon as TileBeacon;
-class Beacon extends Transparent{
+use pocketmine\math\Vector3;
+
+ class Beacon extends Transparent implements SolidLight{
  
  	protected $id = self::BEACON;
  
@@ -40,20 +37,12 @@ class Beacon extends Transparent{
  		return true;
  	}
  
- 	public function getName(){
+ 	public function getName() : string{
  		return "Beacon";
  	}
 	
 	public function getLightLevel(){
 		return 15;
-	}
-	
-	public function getResistance() {
-		return 15;
-	}
-	
-	public function getHardness() {
-		return 3;
 	}
  
  	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){
@@ -95,7 +84,7 @@ class Beacon extends Transparent{
  				Tile::createTile(Tile::BEACON, $this->getLevel(), $nbt);
  			}
 			
-			if($player->isCreative()){
+			if($player->isCreative() and $player->getServer()->limitedCreative){
 				return true;
 			}
  				$player->addWindow($beacon->getInventory());
@@ -103,9 +92,4 @@ class Beacon extends Transparent{
  
  		return true;
  	}
-	
-	public function onBreak(Item $item){
-		$this->getLevel()->setBlock($this, new Air(), true, true);
-		return true;
-	}
  }

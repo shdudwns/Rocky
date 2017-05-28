@@ -68,8 +68,6 @@ use pocketmine\item\WoodenPickaxe;
 use pocketmine\item\WoodenShovel;
 use pocketmine\item\WoodenSword;
 
-use pocketmine\Server;
-
 class Enchantment{
 
 	const TYPE_INVALID = -1;

@@ -9,6 +9,7 @@ settings:
  language: "eng"
  #Whether to send all strings translated to server locale or let the device handle them
  force-language: false
+ #When server shut down, the players will get kicked and this is what will show on there screen.
  shutdown-message: "Server closed"
  #Allow listing plugins via Query
  query-plugins: true
@@ -23,20 +24,8 @@ settings:
  #Set this approximately to your number of cores.
  #If set to auto, it'll try to detect the number of cores (or use 2)
  async-workers: auto
- #Whether the server should "try" to add new configs automatically here
- #DISCLAIMER: WE DO NOT SUPPORT ALL OPTIONS UNDER 'incompatible-plugins'.
- #DO NOT REPORT ANY BUGS BEFORE MAKING SURE IT DOESN'T RESULT OUT OF THIS OPTION!
- #Most old plugins crash the server (maybe even segfaults), and can corrupt your savefiles.
- incompatible-plugins:
- #Load plugins with incompatible API versions
-  plugin-too-new:
-   major: false
-   #Load plugins whose major API version is too new
-   minor: false
-   #Load plugins whose minor API version is too new
-  plugin-too-old: false
-  #Load plugins whose major API version is too old
-
+ #Enables use of non-production, development builds. WARNING: DO NOT enable this unless you are sure you know what you are doing.
+ enable-testing: false
 
 memory:
  #Global soft memory limit in megabytes. Set to 0 to disable
@@ -49,7 +38,7 @@ memory:
 
  #Main thread hard memory limit in megabytes. Set to 0 to disable
  #This will stop the server when the limit is surpassed
- main-hard-limit: 2024
+ main-hard-limit: 1024
 
  #Period in ticks to check memory (default 1 second)
  check-rate: 20
@@ -90,7 +79,7 @@ network:
  #Threshold for batching packets, in bytes. Only these packets will be compressed
  #Set to 0 to compress everything, -1 to disable.
  batch-threshold: 256
- #Compression level used when sending batched packets. Higher = more CPU, less bandwidth usage
+ #Compression level used when sending batched packets. Higher = Uses More CPU, Less = More Bandwidth Usage
  compression-level: 2
  #Use AsyncTasks for compression. Adds half/one tick delay, less CPU load on main thread
  async-compression: true
@@ -101,21 +90,21 @@ debug:
  #To enable assertion execution, set zend.assertions in your php.ini to 1
  assertions:
   #Warn if assertions are enabled in php.ini, due to assertions may impact on runtime performance if enabled.
-  warn-if-enabled: false
+  warn-if-enabled: true
   #Enable throwing exceptions when assertions fail, will allow obtaining more detailed information on the failed assertion, but may cause a server crash.
   #If set to false, a warning will be raised instead of throwing an exception.
   throw-exception: false
  #If > 1, it will show debug messages in the console
  level: 1
  #Enables /status, /gc
- commands: false
- 
+ commands: true
+
 player:
  #Choose whether to enable player data saving.
  save-player-data: true
  anti-cheat:
   #If false, will try to prevent speed and noclip cheats. May cause movement issues with some blocks which are not yet properly implemented.
-  allow-movement-cheats: true
+  allow-movement-cheats: false
   #If false, times block breaks to ensure players are not cheating. May cause issues with some blocks which are not yet properly implemented.
   allow-instabreak: false
 
@@ -123,7 +112,7 @@ level-settings:
  #The default format that levels will use when created
  default-format: pmanvil
  #Automatically change levels tick rate to maintain 20 ticks per second
- auto-tick-rate: true
+ auto-tick-rate: false
  auto-tick-rate-limit: 20
  #Sets the base tick rate (1 = 20 ticks per second, 2 = 10 ticks per second, etc.)
  base-tick-rate: 1
@@ -133,21 +122,21 @@ level-settings:
 chunk-sending:
  #To change server normal render distance, change view-distance in server.properties.
  #Amount of chunks sent to players per tick
- per-tick: 4
+ per-tick: 1
  #Radius of chunks that need to be sent before spawning the player
  spawn-radius: 4
  #Save a serialized copy of the chunk in memory for faster sending
  #Useful in mostly-static worlds where lots of players join at the same time
- cache-chunks: true
+ cache-chunks: false
  #Use AsyncTasks for serializing chunks for sending.
  async-chunk-request: false
 
 chunk-ticking:
  #Max amount of chunks processed each tick
- per-tick: 40
+ per-tick: 16
  #Radius of chunks around a player to tick
  tick-radius: 3
- light-updates: true
+ light-updates: false
  clear-tick-list: true
  #IDs of blocks not to perform random ticking on.
  disable-block-ticking:
@@ -155,16 +144,15 @@ chunk-ticking:
 
 chunk-generation:
  #Max. amount of chunks in the waiting queue to be generated
- queue-size: 4
+ queue-size: 2
  #Max. amount of chunks in the waiting queue to be populated
- population-queue-size: 4
+ population-queue-size: 2
 
 ticks-per:
  animal-spawns: 400
  monster-spawns: 1
  autosave: 6000
  cache-cleanup: 900
-
 spawn-limits:
   monsters: 70
   animals: 15
@@ -184,25 +172,20 @@ anonymous-statistics:
  enabled: true
  host: stats.pocketmine.net
 
-auto-updater:
- enabled: false
- on-update:
-  warn-console: true
-  warn-ops: true
- #Can be development, beta or stable.
- preferred-channel: stable
- #If using a development version, it will suggest changing the channel
- suggest-channels: true
- host: www.pocketmine.net
+commands:
+ #Here you can customize server commands
+ #Specify command names to override the default set here.
+ #If no custom value is defined for a command, the default will be used.
+ #NOTE: Some commands cannot be disabled here, such as the important ones like /stop, /reload, etc.
+ default: true
+ #Set override values per command here
+ #For example, uncommenting the below will disable /plugins and /version
+ #version: false
+ #plugins: false
 
 timings:
  #Choose the host to use for viewing your timings results.
- host: timings.pmmp.io
-
-console:
- #Choose whether to enable server stats reporting on the console title.
- #NOTE: The title ticker will be disabled regardless if console colours are not enabled.
- title-tick: true
+ host: mcpetimings.com
 
 aliases:
  #Examples:

@@ -1,5 +1,24 @@
 <?php
 
+/*
+ *
+ *  _____   _____   __   _   _   _____  __    __  _____
+ * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
+ * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
+ * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
+ * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
+ * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * @author iTX Technologies
+ * @link https://itxtech.org
+ *
+ */
+
 namespace pocketmine\level\generator\normal;
 
 use pocketmine\block\Block;
@@ -11,6 +30,7 @@ use pocketmine\block\Gravel;
 use pocketmine\block\IronOre;
 use pocketmine\block\LapisOre;
 use pocketmine\block\RedstoneOre;
+use pocketmine\block\Stone;
 use pocketmine\level\ChunkManager;
 use pocketmine\level\generator\biome\Biome;
 use pocketmine\level\generator\biome\BiomeSelector;
@@ -76,43 +96,10 @@ class Normal2 extends Normal{
 		$this->noiseBaseGround = new Simplex($this->random, 4, 1 / 4, 1 / 64);
 		$this->noiseRiver = new Simplex($this->random, 2, 1, 1 / 512);
 		$this->random->setSeed($this->level->getSeed());
-		$this->selector = new BiomeSelector($this->random, function($temperature, $rainfall){
-			if($rainfall < 0.25){
-				if($temperature < 0.7){
-					return Biome::OCEAN;
-				}elseif($temperature < 0.85){
-					return Biome::RIVER;
-				}else{
-					return Biome::SWAMP;
-				}
-			}elseif($rainfall < 0.60){
-				if($temperature < 0.25){
-					return Biome::ICE_PLAINS;
-				}elseif($temperature < 0.75){
-					return Biome::PLAINS;
-				}else{
-					return Biome::DESERT;
-				}
-			}elseif($rainfall < 0.80){
-				if($temperature < 0.25){
-					return Biome::TAIGA;
-				}elseif($temperature < 0.75){
-					return Biome::FOREST;
-				}else{
-					return Biome::BIRCH_FOREST;
-				}
-			}else{
-				if($temperature < 0.25){
-					return Biome::MOUNTAINS;
-				}elseif($temperature < 0.70){
-					return Biome::SMALL_MOUNTAINS;
-				}else{
-					return Biome::RIVER;
-				}
-			}
-		}, Biome::getBiome(Biome::OCEAN));
+		$this->selector = new BiomeSelector($this->random, Biome::getBiome(Biome::OCEAN));
 
 		$this->heightOffset = $random->nextRange(-5, 3);
+
 		$this->selector->addBiome(Biome::getBiome(Biome::OCEAN));
 		$this->selector->addBiome(Biome::getBiome(Biome::PLAINS));
 		$this->selector->addBiome(Biome::getBiome(Biome::DESERT));
@@ -124,13 +111,9 @@ class Normal2 extends Normal{
 		$this->selector->addBiome(Biome::getBiome(Biome::ICE_PLAINS));
 		$this->selector->addBiome(Biome::getBiome(Biome::SMALL_MOUNTAINS));
 		$this->selector->addBiome(Biome::getBiome(Biome::BIRCH_FOREST));
-		$this->selector->addBiome(Biome::getBiome(Biome::ROOFED_FOREST));
-		$this->selector->addBiome(Biome::getBiome(Biome::SAVANNA));
-		$this->selector->addBiome(Biome::getBiome(Biome::FROZEN_RIVER));
-		$this->selector->addBiome(Biome::getBiome(Biome::MUSHROOM_ISLAND));
 		$this->selector->addBiome(Biome::getBiome(Biome::BEACH));
-		$this->selector->addBiome(Biome::getBiome(Biome::JUNGLE));
 		$this->selector->addBiome(Biome::getBiome(Biome::MESA));
+
 		$this->selector->recalculate();
 
 		$cover = new GroundCover();
@@ -141,14 +124,17 @@ class Normal2 extends Normal{
 
 		$ores = new Ore();
 		$ores->setOreTypes([
-			new OreType(new CoalOre(), 20, 16, 0, 128),
-			new OreType(new IronOre(), 20, 8, 0, 64),
-			new OreType(new RedstoneOre(), 8, 7, 0, 16),
-			new OreType(new LapisOre(), 1, 6, 0, 32),
-			new OreType(new GoldOre(), 2, 8, 0, 32),
-			new OreType(new DiamondOre(), 1, 7, 0, 16),
-			new OreType(new Dirt(), 20, 32, 0, 128),
-			new OreType(new Gravel(), 10, 16, 0, 128)
+			new OreType(new CoalOre(), 20, 17, 0, 128),
+			new OreType(new IronOre(), 20, 9, 0, 64),
+			new OreType(new RedstoneOre(), 8, 8, 0, 16),
+			new OreType(new LapisOre(), 1, 7, 0, 16),
+			new OreType(new GoldOre(), 2, 9, 0, 32),
+			new OreType(new DiamondOre(), 1, 8, 0, 16),
+			new OreType(new Dirt(), 10, 33, 0, 128),
+			new OreType(new Gravel(), 8, 33, 0, 128),
+			new OreType(new Stone(Stone::GRANITE), 10, 33, 0, 80),
+			new OreType(new Stone(Stone::DIORITE), 10, 33, 0, 80),
+			new OreType(new Stone(Stone::ANDESITE), 10, 33, 0, 80)
 		]);
 		$this->populators[] = $ores;
 	}
@@ -205,8 +191,7 @@ class Normal2 extends Normal{
 					}
 					$canRiver = false;
 				}else if($genyHeight <= $this->beathStopHeight && $genyHeight >= $this->beathStartHeight){
-					//todo: there is no beach biome, use desert temporarily
-					$biome = Biome::getBiome(Biome::DESERT);
+					$biome = Biome::getBiome(Biome::BEACH);
 				}else{
 					$biome = $this->pickBiome($chunkX * 16 + $genx, $chunkZ * 16 + $genz);
 					if($canBaseGround){
@@ -246,7 +231,6 @@ class Normal2 extends Normal{
 					}
 				}
 				$chunk->setBiomeId($genx, $genz, $biome->getId());
-
 				//generating
 				$generateHeight = $genyHeight > $this->seaHeight ? $genyHeight : $this->seaHeight;
 				for($geny = 0; $geny <= $generateHeight; $geny++){
@@ -280,7 +264,7 @@ class Normal2 extends Normal{
 		}
 
 		$chunk = $this->level->getChunk($chunkX, $chunkZ);
-		$biome = Biome::getBiome($chunk->getBiomeId(7, 7));
+		$biome = Biome::getBiome($chunk->getBiomeId(7, 7)); // same as Normal Generator.
 		$biome->populateChunk($this->level, $chunkX, $chunkZ, $this->random);
 	}
 

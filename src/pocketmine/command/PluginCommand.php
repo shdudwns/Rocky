@@ -24,6 +24,7 @@ namespace pocketmine\command;
 use pocketmine\event\TranslationContainer;
 use pocketmine\plugin\Plugin;
 
+
 class PluginCommand extends Command implements PluginIdentifiableCommand{
 
 	/** @var Plugin */
@@ -70,7 +71,7 @@ class PluginCommand extends Command implements PluginIdentifiableCommand{
 	 * @param CommandExecutor $executor
 	 */
 	public function setExecutor(CommandExecutor $executor){
-		$this->executor = $executor;
+		$this->executor = ($executor != null) ? $executor : $this->owningPlugin;
 	}
 
 	/**

@@ -2,11 +2,11 @@
 
 /*
  *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
+ *  ____            _        _   __  __ _                  __  __ ____  
+ * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
  * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
+ * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
+ * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  *
  * @author PocketMine Team
  * @link http://www.pocketmine.net/
- *
+ * 
  *
 */
 
@@ -38,7 +38,7 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ListTag;
-use pocketmine\network\mcpe\protocol\ExplodePacket;
+use pocketmine\network\protocol\ExplodePacket;
 use pocketmine\utils\Random;
 
 class Explosion{
@@ -54,18 +54,20 @@ class Explosion{
 	public $stepLen = 0.3;
 	/** @var Entity|Block */
 	private $what;
+	private $dropItem;
 
-	public function __construct(Position $center, $size, $what = null){
+	public function __construct(Position $center, $size, $what = null, bool $dropItem = true){
 		$this->level = $center->getLevel();
 		$this->source = $center;
 		$this->size = max($size, 0);
 		$this->what = $what;
+		$this->dropItem = $dropItem;
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function explodeA(){
+	public function explodeA() : bool{
 		if($this->size < 0.1){
 			return false;
 		}
@@ -116,7 +118,7 @@ class Explosion{
 		return true;
 	}
 
-	public function explodeB(){
+	public function explodeB() : bool{
 		$send = [];
 		$updateBlocks = [];
 
@@ -162,7 +164,9 @@ class Explosion{
 					$ev = new EntityDamageEvent($entity, EntityDamageEvent::CAUSE_BLOCK_EXPLOSION, $damage);
 				}
 
-				$entity->attack($ev->getFinalDamage(), $ev);
+				if($entity->attack($ev->getFinalDamage(), $ev) === true){
+					$ev->useArmors();
+				}
 				$entity->setMotion($motion->multiply($impact));
 			}
 		}
@@ -191,7 +195,7 @@ class Explosion{
 					"Fuse" => new ByteTag("Fuse", mt_rand(10, 30))
 				]));
 				$tnt->spawnToAll();
-			}elseif(mt_rand(0, 100) < $yield){
+			}elseif($this->dropItem and mt_rand(0, 100) < $yield){
 				foreach($block->getDrops($air) as $drop){
 					$this->level->dropItem($block->add(0.5, 0.5, 0.5), Item::get(...$drop));
 				}
@@ -201,7 +205,7 @@ class Explosion{
 
 			$pos = new Vector3($block->x, $block->y, $block->z);
 
-			for($side = 0; $side <= 5; $side++){
+			for($side = 0; $side < 5; $side++){
 				$sideBlock = $pos->getSide($side);
 				if(!isset($this->affectedBlocks[$index = Level::blockHash($sideBlock->x, $sideBlock->y, $sideBlock->z)]) and !isset($updateBlocks[$index])){
 					$this->level->getServer()->getPluginManager()->callEvent($ev = new BlockUpdateEvent($this->level->getBlock($sideBlock)));

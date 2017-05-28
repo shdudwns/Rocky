@@ -25,13 +25,14 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\event\TranslationContainer;
 
+
 class SaveOnCommand extends VanillaCommand{
 
 	public function __construct($name){
 		parent::__construct(
 			$name,
 			"%pocketmine.command.saveon.description",
-			"%commands.save-on.usage"
+			"%pocketmine.command.saveon.usage"
 		);
 		$this->setPermission("pocketmine.command.save.enable");
 	}

@@ -44,7 +44,7 @@ class FlowerPot extends Flowable{
 		$this->meta = $meta;
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return "Flower Pot Block";
 	}
 
@@ -85,7 +85,7 @@ class FlowerPot extends Flowable{
 			}
 		}
 
-		Tile::createTile(Tile::FLOWER_POT, $this->getLevel()->getChunk($this->x >> 4, $this->z >> 4), $nbt);
+		Tile::createTile(Tile::FLOWER_POT, $this->getLevel(), $nbt);
 		return true;
 	}
 
@@ -123,7 +123,7 @@ class FlowerPot extends Flowable{
 		return true;
 	}
 
-	public function getDrops(Item $item){
+	public function getDrops(Item $item) : array{
 		$items = [[Item::FLOWER_POT, 0, 1]];
 		$tile = $this->getLevel()->getTile($this);
 		if($tile instanceof TileFlowerPot){

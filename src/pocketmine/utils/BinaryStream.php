@@ -177,19 +177,11 @@ class BinaryStream extends \stdClass{
 	}
 
 	public function getUUID(){
-		//This is actually two little-endian longs: UUID Most followed by UUID Least
-		$part1 = $this->getLInt();
-		$part0 = $this->getLInt();
-		$part3 = $this->getLInt();
-		$part2 = $this->getLInt();
-		return new UUID($part0, $part1, $part2, $part3);
+		return UUID::fromBinary($this->get(16));
 	}
 
 	public function putUUID(UUID $uuid){
-		$this->putLInt($uuid->getPart(1));
-		$this->putLInt($uuid->getPart(0));
-		$this->putLInt($uuid->getPart(3));
-		$this->putLInt($uuid->getPart(2));
+		$this->put($uuid->toBinary());
 	}
 
 	public function getSlot(){
@@ -241,68 +233,66 @@ class BinaryStream extends \stdClass{
 		$this->put($v);
 	}
 
+	//TODO: varint64
+
 	/**
-	 * Reads a 32-bit variable-length unsigned integer from the buffer and returns it.
-	 * @return int
+	 * Reads an unsigned varint32 from the stream.
 	 */
 	public function getUnsignedVarInt(){
 		return Binary::readUnsignedVarInt($this);
 	}
 
 	/**
-	 * Writes a 32-bit variable-length unsigned integer to the end of the buffer.
-	 * @param int $v
+	 * Writes an unsigned varint32 to the stream.
 	 */
 	public function putUnsignedVarInt($v){
 		$this->put(Binary::writeUnsignedVarInt($v));
 	}
 
 	/**
-	 * Reads a 32-bit zigzag-encoded variable-length integer from the buffer and returns it.
-	 * @return int
+	 * Reads a signed varint32 from the stream.
 	 */
 	public function getVarInt(){
 		return Binary::readVarInt($this);
 	}
 
 	/**
-	 * Writes a 32-bit zigzag-encoded variable-length integer to the end of the buffer.
-	 * @param int $v
+	 * Writes a signed varint32 to the stream.
 	 */
 	public function putVarInt($v){
 		$this->put(Binary::writeVarInt($v));
 	}
 
-	/**
-	 * Reads a 64-bit variable-length integer from the buffer and returns it.
-	 * @return int|string int, or the string representation of an int64 on 32-bit platforms
-	 */
-	public function getUnsignedVarLong(){
-		return Binary::readUnsignedVarLong($this);
+	public function getEntityId(){
+		return $this->getVarInt();
 	}
 
-	/**
-	 * Writes a 64-bit variable-length integer to the end of the buffer.
-	 * @param int|string $v int, or the string representation of an int64 on 32-bit platforms
-	 */
-	public function putUnsignedVarLong($v){
-		$this->buffer .= Binary::writeUnsignedVarLong($v);
+	public function putEntityId($v){
+		$this->putVarInt($v);
 	}
 
-	/**
-	 * Reads a 64-bit zigzag-encoded variable-length integer from the buffer and returns it.
-	 * @return int|string int, or the string representation of an int64 on 32-bit platforms
-	 */
-	public function getVarLong(){
-		return Binary::readVarLong($this);
+	public function getBlockCoords(&$x, &$y, &$z){
+		$x = $this->getVarInt();
+		$y = $this->getUnsignedVarInt();
+		$z = $this->getVarInt();
 	}
 
-	/**
-	 * Writes a 64-bit zigzag-encoded variable-length integer to the end of the buffer.
-	 * @param int|string $v int, or the string representation of an int64 on 32-bit platforms
-	 */
-	public function putVarLong($v){
-		$this->buffer .= Binary::writeVarLong($v);
+	public function putBlockCoords($x, $y, $z){
+		$this->putVarInt($x);
+		$this->putUnsignedVarInt($y);
+		$this->putVarInt($z);
+	}
+
+	public function getVector3f(&$x, &$y, &$z){
+		$x = $this->getLFloat(4);
+		$y = $this->getLFloat(4);
+		$z = $this->getLFloat(4);
+	}
+
+	public function putVector3f($x, $y, $z){
+		$this->putLFloat($x);
+		$this->putLFloat($y);
+		$this->putLFloat($z);
 	}
 
 	public function feof(){

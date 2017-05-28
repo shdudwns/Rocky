@@ -1,24 +1,5 @@
 <?php
 
-/*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- *
- *
-*/
-
 namespace {
 	function safe_var_dump(){
 		static $cnt = 0;
@@ -70,12 +51,12 @@ namespace pocketmine {
 	use pocketmine\utils\ServerKiller;
 	use pocketmine\utils\Terminal;
 	use pocketmine\utils\Utils;
-	use pocketmine\wizard\SetupWizard;
-	use raklib\RakLib;
+	use pocketmine\wizard\Installer;
 
 	const VERSION = "1.0dev";
-	const API_VERSION = "3.0.0-ALPHA5";
-	const CODENAME = "Revenge";
+	const API_VERSION = "3.0.1";
+	const CODENAME = "revenge";
+	const GENISYS_API_VERSION = '2.0.0';
 
 	/*
 	 * Startup code. Do not look at it, it may harm you.
@@ -83,12 +64,6 @@ namespace pocketmine {
 	 * This is the only non-class based file on this project.
 	 * Enjoy it as much as I did writing it. I don't want to do it again.
 	 */
-
-	if(!extension_loaded("phar")){
-		echo "[CRITICAL] Unable to find the Phar extension." . PHP_EOL;
-		echo "[CRITICAL] Please use the installer provided on the homepage." . PHP_EOL;
-		exit(1);
-	}
 
 	if(\Phar::running(true) !== ""){
 		@define('pocketmine\PATH', \Phar::running(true) . "/");
@@ -109,11 +84,6 @@ namespace pocketmine {
 	}
 
 	if(!class_exists("ClassLoader", false)){
-		if(!is_file(\pocketmine\PATH . "src/spl/ClassLoader.php")){
-			echo "[CRITICAL] Unable to find the PocketMine-SPL library." . PHP_EOL;
-			echo "[CRITICAL] Please use provided builds or clone the repository recursively." . PHP_EOL;
-			exit(1);
-		}
 		require_once(\pocketmine\PATH . "src/spl/ClassLoader.php");
 		require_once(\pocketmine\PATH . "src/spl/BaseClassLoader.php");
 	}
@@ -123,17 +93,10 @@ namespace pocketmine {
 	$autoloader->addPath(\pocketmine\PATH . "src" . DIRECTORY_SEPARATOR . "spl");
 	$autoloader->register(true);
 
-	try{
-		if(!class_exists(RakLib::class)){
-			throw new \Exception;
-		}
-	}catch(\Exception $e){
-		echo "[CRITICAL] Unable to find the RakLib library." . PHP_EOL;
-		exit(1);
-	}
 
 	set_time_limit(0); //Who set it to 30 seconds?!?!
 
+	gc_enable();
 	error_reporting(-1);
 	ini_set("allow_url_fopen", 1);
 	ini_set("display_errors", 1);
@@ -191,7 +154,7 @@ namespace pocketmine {
 			$default_timezone = timezone_name_from_abbr($timezone);
 			ini_set("date.timezone", $default_timezone);
 			date_default_timezone_set($default_timezone);
-		}else{
+		} else {
 			date_default_timezone_set($timezone);
 		}
 	}
@@ -233,6 +196,7 @@ namespace pocketmine {
 				}
 
 				return parse_offset($offset);
+				break;
 			case 'linux':
 				// Ubuntu / Debian.
 				if(file_exists('/etc/timezone')){
@@ -259,6 +223,7 @@ namespace pocketmine {
 				}
 
 				return parse_offset($offset);
+				break;
 			case 'mac':
 				if(is_link('/etc/localtime')){
 					$filename = readlink('/etc/localtime');
@@ -269,8 +234,10 @@ namespace pocketmine {
 				}
 
 				return false;
+				break;
 			default:
 				return false;
+				break;
 		}
 	}
 
@@ -335,7 +302,7 @@ namespace pocketmine {
 				if(function_exists("posix_kill")){
 					posix_kill($pid, SIGKILL);
 				}else{
-					exec("kill -9 " . ((int) $pid) . " > /dev/null 2>&1");
+					exec("kill -9 " . ((int)$pid) . " > /dev/null 2>&1");
 				}
 		}
 	}
@@ -358,7 +325,7 @@ namespace pocketmine {
 		return -1;
 	}
 
-	function getTrace($start = 0, $trace = null){
+	function getTrace($start = 1, $trace = null){
 		if($trace === null){
 			if(function_exists("xdebug_get_function_stack")){
 				$trace = array_reverse(xdebug_get_function_stack());
@@ -395,7 +362,12 @@ namespace pocketmine {
 	$errors = 0;
 
 	if(php_sapi_name() !== "cli"){
-		$logger->critical("You must run rocky using the CLI.");
+		$logger->critical("You must run PocketMine-MP using the CLI.");
+		++$errors;
+	}
+
+	if(!extension_loaded("sockets")){
+		$logger->critical("Unable to find the Socket extension.");
 		++$errors;
 	}
 
@@ -408,83 +380,69 @@ namespace pocketmine {
 		++$errors;
 	}
 
+	if(!extension_loaded("uopz")){
+		//$logger->notice("Couldn't find the uopz extension. Some functions may be limited");
+	}
+
 	if(extension_loaded("pocketmine")){
 		if(version_compare(phpversion("pocketmine"), "0.0.1") < 0){
-			$logger->critical("You have the native rocky extension, but your version is lower than 0.0.1.");
+			$logger->critical("You have the native PocketMine extension, but your version is lower than 0.0.1.");
 			++$errors;
 		}elseif(version_compare(phpversion("pocketmine"), "0.0.4") > 0){
-			$logger->critical("You have the native rocky extension, but your version is higher than 0.0.4.");
+			$logger->critical("You have the native PocketMine extension, but your version is higher than 0.0.4.");
 			++$errors;
 		}
 	}
-
+	
 	if(extension_loaded("xdebug")){
 		$logger->warning("
 
 
-	You are running rocky with xdebug enabled. This has a major impact on performance.
+	You are running PocketMine with xdebug enabled. This has a major impact on performance.
 
 		");
 	}
 
-	$extensions = [
-		"curl" => "cURL",
-		"json" => "JSON",
-		"mbstring" => "Multibyte String",
-		"yaml" => "YAML",
-		"sockets" => "Sockets",
-		"zip" => "Zip",
-		"zlib" => "Zlib"
-	];
+	if(!extension_loaded("curl")){
+		$logger->critical("Unable to find the cURL extension.");
+		++$errors;
+	}
 
-	foreach($extensions as $ext => $name){
-		if(!extension_loaded($ext)){
-			$logger->critical("Unable to find the $name ($ext) extension.");
-			++$errors;
-		}
+	if(!extension_loaded("yaml")){
+		$logger->critical("Unable to find the YAML extension.");
+		++$errors;
+	}
+
+	if(!extension_loaded("zlib")){
+		$logger->critical("Unable to find the Zlib extension.");
+		++$errors;
 	}
 
 	if($errors > 0){
-		$logger->critical("Please use the installer provided on the homepage, or recompile PHP again.");
+		$logger->critical("Please update your PHP from itxtech.org/genisys/get/, or recompile PHP again.");
 		$logger->shutdown();
 		$logger->join();
 		exit(1); //Exit with error
 	}
 
-	if(PHP_INT_SIZE < 8){
-		$logger->warning("Running rocky with 32-bit systems/PHP is deprecated. Support for 32-bit may be dropped in the future.");
+	if(file_exists(\pocketmine\PATH . ".git/refs/heads/master")){ //Found Git information!
+		define('pocketmine\GIT_COMMIT', strtolower(trim(file_get_contents(\pocketmine\PATH . ".git/refs/heads/master"))));
+	}else{
+		define('pocketmine\GIT_COMMIT', "0000000000000000000000000000000000000000");
 	}
-
-	$gitHash = str_repeat("00", 20);
-	if(file_exists(\pocketmine\PATH . ".git/HEAD")){ //Found Git information!
-		$ref = trim(file_get_contents(\pocketmine\PATH . ".git/HEAD"));
-		if(preg_match('/^[0-9a-f]{40}$/i', $ref)){
-			$gitHash = strtolower($ref);
-		}elseif(substr($ref, 0, 5) === "ref: "){
-			$refFile = \pocketmine\PATH . ".git/" . substr($ref, 5);
-			if(is_file($refFile)){
-				$gitHash = strtolower(trim(file_get_contents($refFile)));
-			}
-		}
-	}
-
-	define('pocketmine\GIT_COMMIT', $gitHash);
-
 
 	@define("ENDIANNESS", (pack("d", 1) === "\77\360\0\0\0\0\0\0" ? Binary::BIG_ENDIAN : Binary::LITTLE_ENDIAN));
 	@define("INT32_MASK", is_int(0xffffffff) ? 0xffffffff : -1);
 	@ini_set("opcache.mmap_base", bin2hex(random_bytes(8))); //Fix OPCache address errors
 
-
 	if(!file_exists(\pocketmine\DATA . "server.properties") and !isset($opts["no-wizard"])){
-		$installer = new SetupWizard();
+		$installer = new Installer();
 		if(!$installer->run()){
 			$logger->shutdown();
 			$logger->join();
 			exit(-1);
 		}
 	}
-
 
 	if(\Phar::running(true) === ""){
 		$logger->warning("Non-packaged rocky installation detected, do not use on production.");
@@ -497,7 +455,6 @@ namespace pocketmine {
 
 	$killer = new ServerKiller(8);
 	$killer->start();
-	usleep(10000); //Fixes ServerKiller not being able to start on single-core machines
 
 	$erroredThreads = 0;
 	foreach(ThreadManager::getInstance()->getAll() as $id => $thread){

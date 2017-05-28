@@ -25,13 +25,14 @@ use pocketmine\command\CommandSender;
 use pocketmine\event\TranslationContainer;
 use pocketmine\Player;
 
+
 class SeedCommand extends VanillaCommand{
 
 	public function __construct($name){
 		parent::__construct(
 			$name,
 			"%pocketmine.command.seed.description",
-			"%commands.seed.usage"
+			"%pocketmine.command.seed.usage"
 		);
 		$this->setPermission("pocketmine.command.seed");
 	}

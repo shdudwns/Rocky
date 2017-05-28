@@ -72,7 +72,7 @@ class PermissibleBase implements Permissible{
 	/**
 	 * @param bool $value
 	 *
-	 * @throws \Exception
+	 * @throws \Throwable
 	 */
 	public function setOp($value){
 		if($this->opable === null){
@@ -147,7 +147,7 @@ class PermissibleBase implements Permissible{
 	/**
 	 * @param PermissionAttachment $attachment
 	 *
-	 * @throws \Exception
+	 * @throws \Throwable
 	 */
 	public function removeAttachment(PermissionAttachment $attachment){
 		if($attachment === null){
@@ -188,13 +188,12 @@ class PermissibleBase implements Permissible{
 	}
 
 	public function clearPermissions(){
-		$pluginManager = Server::getInstance()->getPluginManager();
 		foreach(array_keys($this->permissions) as $name){
-			$pluginManager->unsubscribeFromPermission($name, $this->parent ?? $this);
+			Server::getInstance()->getPluginManager()->unsubscribeFromPermission($name, $this->parent !== null ? $this->parent : $this);
 		}
 
-		$pluginManager->unsubscribeFromDefaultPerms(false, $this->parent ?? $this);
-		$pluginManager->unsubscribeFromDefaultPerms(true, $this->parent ?? $this);
+		Server::getInstance()->getPluginManager()->unsubscribeFromDefaultPerms(false, $this->parent !== null ? $this->parent : $this);
+		Server::getInstance()->getPluginManager()->unsubscribeFromDefaultPerms(true, $this->parent !== null ? $this->parent : $this);
 
 		$this->permissions = [];
 	}

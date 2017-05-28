@@ -2,20 +2,23 @@
 
 /*
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
+ *  _____            _               _____           
+ * / ____|          (_)             |  __ \          
+ *| |  __  ___ _ __  _ ___ _   _ ___| |__) | __ ___  
+ *| | |_ |/ _ \ '_ \| / __| | | / __|  ___/ '__/ _ \ 
+ *| |__| |  __/ | | | \__ \ |_| \__ \ |   | | | (_) |
+ * \_____|\___|_| |_|_|___/\__, |___/_|   |_|  \___/ 
+ *                         __/ |                    
+ *                        |___/                     
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @author iTX Technologies
- * @link https://itxtech.org
+ * @author GenisysPro
+ * @link https://github.com/GenisysPro/GenisysPro
+ *
  *
 */
 
@@ -105,6 +108,7 @@ interface ItemIds extends BlockIds{
 	const SNOWBALL = 332;
 	const BOAT = 333;
 	const LEATHER = 334;
+
 	const BRICK = 336;
 	const CLAY = 337;
 	const SUGARCANE = 338; const SUGAR_CANE = 338; const SUGAR_CANES = 338;
@@ -175,7 +179,8 @@ interface ItemIds extends BlockIds{
 	const ENCHANTED_BOOK = 403;
 	const COMPARATOR = 404;
 	const NETHER_BRICK = 405;
-	const NETHER_QUARTZ = 406; const QUARTZ = 406;
+	const QUARTZ = 406;
+	const NETHER_QUARTZ = 406;
 	const MINECART_WITH_TNT = 407;
 	const MINECART_WITH_HOPPER = 408;
 	const PRISMARINE_SHARD = 409;
@@ -195,7 +200,7 @@ interface ItemIds extends BlockIds{
 	const RAW_MUTTON = 423;
 	const COOKED_MUTTON = 424;
 	//const BANNER = 425;
-	const END_CRYSTAL = 426;
+	//const END_CRYSTAL = 426;
 	const SPRUCE_DOOR = 427;
 	const BIRCH_DOOR = 428;
 	const JUNGLE_DOOR = 429;
@@ -203,23 +208,13 @@ interface ItemIds extends BlockIds{
 	const DARK_OAK_DOOR = 431;
 	const CHORUS_FRUIT = 432;
 	const POPPED_CHORUS_FRUIT = 433;
-
 	const DRAGONS_BREATH = 437;
 	const SPLASH_POTION = 438;
-
-	const LINGERING_POTION = 441;
-
-	const COMMAND_BLOCK_MINECART = 443;
-	const ELYTRA = 444; const ELYTRA_WINGS = 444;
+	const ELYTRA = 444;
+	const ELYTRA_WINGS = 444; 
 	const SHULKER_SHELL = 445;
-
-	const TOTEM_OF_UNDYING = 450;
-
-	const IRON_NUGGET = 452;
-
 	const BEETROOT = 457;
-	const BEETROOT_SEEDS = 458; 
-	const BEETROOT_SEED = 458;
+	const BEETROOT_SEEDS = 458; const BEETROOT_SEED = 458;
 	const BEETROOT_SOUP = 459;
 	const RAW_SALMON = 460;
 	const CLOWN_FISH = 461;

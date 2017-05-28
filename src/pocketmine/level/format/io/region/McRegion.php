@@ -126,7 +126,7 @@ class McRegion extends BaseLevelProvider{
 	public function nbtDeserialize(string $data){
 		$nbt = new NBT(NBT::BIG_ENDIAN);
 		try{
-			$nbt->readCompressed($data);
+			$nbt->readCompressed($data, ZLIB_ENCODING_DEFLATE);
 
 			$chunk = $nbt->getData();
 
@@ -210,14 +210,6 @@ class McRegion extends BaseLevelProvider{
 		return "mcregion";
 	}
 
-	/**
-	 * Returns the storage version as per Minecraft PC world formats.
-	 * @return int
-	 */
-	public static function getPcWorldFormatVersion() : int{
-		return 19132; //mcregion
-	}
-
 	public function getWorldHeight() : int{
 		//TODO: add world height options
 		return 128;
@@ -227,9 +219,12 @@ class McRegion extends BaseLevelProvider{
 		$isValid = (file_exists($path . "/level.dat") and is_dir($path . "/region/"));
 
 		if($isValid){
-			$files = array_filter(scandir($path . "/region/"), function($file){
-				return substr($file, strrpos($file, ".") + 1, 2) === "mc"; //region file
-			});
+			$files = glob($path . "/region/*.mc*");
+			if(empty($files)){ //possible glob() issue on some systems
+				$files = array_filter(scandir($path . "/region/"), function($file){
+					return substr($file, strrpos($file, ".") + 1, 2) === "mc"; //region file
+				});
+			}
 
 			foreach($files as $f){
 				if(substr($f, strrpos($f, ".") + 1) !== static::REGION_FILE_EXTENSION){
@@ -256,10 +251,10 @@ class McRegion extends BaseLevelProvider{
 			"initialized" => new ByteTag("initialized", 1),
 			"GameType" => new IntTag("GameType", 0),
 			"generatorVersion" => new IntTag("generatorVersion", 1), //2 in MCPE
-			"SpawnX" => new IntTag("SpawnX", 256),
+			"SpawnX" => new IntTag("SpawnX", 128),
 			"SpawnY" => new IntTag("SpawnY", 70),
-			"SpawnZ" => new IntTag("SpawnZ", 256),
-			"version" => new IntTag("version", static::getPcWorldFormatVersion()),
+			"SpawnZ" => new IntTag("SpawnZ", 128),
+			"version" => new IntTag("version", 19133),
 			"DayTime" => new IntTag("DayTime", 0),
 			"LastPlayed" => new LongTag("LastPlayed", microtime(true) * 1000),
 			"RandomSeed" => new LongTag("RandomSeed", $seed),
@@ -447,22 +442,6 @@ class McRegion extends BaseLevelProvider{
 	protected function loadRegion(int $x, int $z){
 		if(!isset($this->regions[$index = Level::chunkHash($x, $z)])){
 			$this->regions[$index] = new RegionLoader($this, $x, $z, static::REGION_FILE_EXTENSION);
-			try{
-				$this->regions[$index]->open();
-			}catch(CorruptedRegionException $e){
-				$logger = $this->level->getServer()->getLogger();
-				$logger->error("Corrupted region file detected: " . $e->getMessage());
-
-				$this->regions[$index]->close(false); //Do not write anything to the file
-
-				$path = $this->regions[$index]->getFilePath();
-				$backupPath = $path . ".bak." . time();
-				rename($path, $backupPath);
-				$logger->error("Corrupted region file has been backed up to " . $backupPath);
-
-				$this->regions[$index] = new RegionLoader($this, $x, $z, static::REGION_FILE_EXTENSION);
-				$this->regions[$index]->open(); //this will create a new empty region to replace the corrupted one
-			}
 		}
 	}
 

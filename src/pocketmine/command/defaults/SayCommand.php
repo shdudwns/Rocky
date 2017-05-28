@@ -33,7 +33,8 @@ class SayCommand extends VanillaCommand{
 		parent::__construct(
 			$name,
 			"%pocketmine.command.say.description",
-			"%commands.say.usage"
+			"%pocketmine.command.say.usage",
+			["broadcast", "announce"]
 		);
 		$this->setPermission("pocketmine.command.say");
 	}

@@ -1,4 +1,33 @@
 <?php
+
+/*
+ *
+ *  ____            _        _   __  __ _                  __  __ ____
+ * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
+ * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
+ * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
+ * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
+ *
+ *  _____            _               _____           
+ * / ____|          (_)             |  __ \          
+ *| |  __  ___ _ __  _ ___ _   _ ___| |__) | __ ___  
+ *| | |_ |/ _ \ '_ \| / __| | | / __|  ___/ '__/ _ \ 
+ *| |__| |  __/ | | | \__ \ |_| \__ \ |   | | | (_) |
+ * \_____|\___|_| |_|_|___/\__, |___/_|   |_|  \___/ 
+ *                         __/ |                    
+ *                        |___/                     
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * @author GenisysPro
+ * @link https://github.com/GenisysPro/GenisysPro
+ *
+ *
+*/
+
 namespace pocketmine\plugin;
 
 use pocketmine\command\defaults\TimingsCommand;
@@ -13,8 +42,6 @@ use pocketmine\event\TimingsHandler;
 use pocketmine\permission\Permissible;
 use pocketmine\permission\Permission;
 use pocketmine\Server;
-use pocketmine\utils\MainLogger;
-use pocketmine\utils\PluginException;
 
 /**
  * Manages all the plugins, Permissions and Permissibles
@@ -97,7 +124,7 @@ class PluginManager{
 	/**
 	 * @param string $loaderName A PluginLoader class name
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function registerInterface($loaderName){
 		if(is_subclass_of($loaderName, PluginLoader::class)){
@@ -192,60 +219,74 @@ class PluginManager{
 								continue;
 							}
 
-							//1=outdated plugin, 2=outdated server, 4=minor, 8=normal
-							$compatibility = 0;
+							$compatible = false;
 							//Check multiple dependencies
-							foreach($description->getCompatibleApis() as $versionString){
+							foreach($description->getCompatibleApis() as $version){
+								//Format: majorVersion.minorVersion.patch (3.0.0)
+								//    or: majorVersion.minorVersion.patch-devBuild (3.0.0-alpha1)
+								if($version !== $this->server->getApiVersion()){
+									$pluginApi = array_pad(explode("-", $version), 2, ""); //0 = version, 1 = suffix (optional)
+									$serverApi = array_pad(explode("-", $this->server->getApiVersion()), 2, "");
+
+									if(strtoupper($pluginApi[1]) !== strtoupper($serverApi[1])){ //Different release phase (alpha vs. beta) or phase build (alpha.1 vs alpha.2)
+										continue;
+									}
+
+									$pluginNumbers = array_map("intval", explode(".", $pluginApi[0]));
+									$serverNumbers = array_map("intval", explode(".", $serverApi[0]));
+
+									if($pluginNumbers[0] !== $serverNumbers[0]){ //Completely different API version
+										continue;
+									}
+
+									if($pluginNumbers[1] > $serverNumbers[1]){ //If the plugin requires new API features, being backwards compatible
+										continue;
+									}
+								}
+
+								$compatible = true;
+								break;
+							}
+
+							$compatiblegeniapi = false;
+							foreach($description->getCompatibleGeniApis() as $version){
 								//Format: majorVersion.minorVersion.patch
-								$version = array_map("intval", explode(".", $versionString));
-								$apiVersion = array_map("intval", explode(".", $this->server->getApiVersion()));
-								//Completely different API version: too old
-								if($version[0] < $apiVersion[0]){
-									$compatibility |= 1;
+								$version = array_map("intval", explode(".", $version));
+								$apiVersion = array_map("intval", explode(".", $this->server->getGeniApiVersion()));
+								//Completely different API version
+								if($version[0] > $apiVersion[0]){
 									continue;
 								}
-								//Completely different API version: too new
-								if($version[0] > $apiVersion[0]){
-									$compatibility |= 2;
-									continue;
+								//If the plugin uses new API
+								if($version[0] < $apiVersion[0]){
+									$compatiblegeniapi = true;
+									break;
 								}
 								//If the plugin requires new API features, being backwards compatible
 								if($version[1] > $apiVersion[1]){
-									$compatibility |= 4;
 									continue;
 								}
-								$compatibility |= 8;
+
+								if($version[1] == $apiVersion[1] and $version[2] > $apiVersion[2]){
+									continue;
+								}
+
+								$compatiblegeniapi = true;
 								break;
 							}
-							if(($compatibility & 8) === 0){
-								$accept1 = $this->server->getProperty("settings.incompatible-plugins.plugin-too-old", false);
-								$accept2 = $this->server->getProperty("settings.incompatible-plugins.plugin-too-new.major", false);
-								$accept4 = $this->server->getProperty("settings.incompatible-plugins.plugin-too-new.minor", false);
-								if(!$accept1){
-									$compatibility &= ~1;
-								}
-								if(!$accept2){
-									$compatibility &= ~2;
-								}
-								if(!$accept4){
-									$compatibility &= ~4;
-								}
-								if($compatibility === 0){
-									if(($compatibility & 4) === 0){
-										$this->server->getLogger()->error($this->server->getLanguage()->translateString("pocketmine.plugin.loadError", [$name, "%pocketmine.plugin.incompatibleAPI.minorTooNew"]));
-									}elseif(($compatibility & 2) === 0){
-										$this->server->getLogger()->error($this->server->getLanguage()->translateString("pocketmine.plugin.loadError", [$name, "%pocketmine.plugin.incompatibleAPI.majortooNew"]));
-									}else{
-										$this->server->getLogger()->error($this->server->getLanguage()->translateString("pocketmine.plugin.loadError", [$name, "%pocketmine.plugin.incompatibleAPI.majorTooOld"]));
-									}
-									continue; #Abort loading of this plugin, move on to the next
-								}elseif($compatibility & 4){
-									$this->server->getLogger()->warning($this->server->getLanguage()->translateString("pocketmine.plugin.incompatibleAPIWarning.minorTooNew", [$name]));
-								}elseif($compatibility & 2){
-									$this->server->getLogger()->warning($this->server->getLanguage()->translateString("pocketmine.plugin.incompatibleAPIWarning.majorTooNew", [$name]));
-								}elseif($compatibility & 1){
-									$this->server->getLogger()->warning($this->server->getLanguage()->translateString("pocketmine.plugin.incompatibleAPIWarning.majorTooOld", [$name]));
-								}
+
+							if($compatible === false){
+							 if($this->server->loadIncompatibleAPI === true){
+			     $this->server->getLogger()->debug("插件{$name}的API与服务器不符,但GenisysPro仍然加载了它");
+			    }else{
+			     $this->server->getLogger()->error($this->server->getLanguage()->translateString("pocketmine.plugin.loadError", [$name, "%pocketmine.plugin.incompatibleAPI"]));
+								 continue;
+			    }
+							}
+
+							if($compatiblegeniapi === false){
+								$this->server->getLogger()->error("Could not load plugin '{$description->getName()}': Incompatible GeniAPI version");
+								continue;
 							}
 
 							$plugins[$name] = $file;
@@ -261,7 +302,7 @@ class PluginManager{
 								}
 							}
 						}
-					}catch(Throwable $e){
+					}catch(\Throwable $e){
 						$this->server->getLogger()->error($this->server->getLanguage()->translateString("pocketmine.plugin.fileError", [$file, $directory, $e->getMessage()]));
 						$this->server->getLogger()->logException($e);
 					}
@@ -385,7 +426,7 @@ class PluginManager{
 	}
 
 	/**
-	 * @param boolean $op
+	 * @param bool $op
 	 *
 	 * @return Permission[]
 	 */
@@ -422,11 +463,11 @@ class PluginManager{
 			$this->defaultPerms[$permission->getName()] = $permission;
 			$this->dirtyPermissibles(false);
 		}
-		Timings::$permissionDefaultTimer->startTiming();
+		Timings::$permissionDefaultTimer->stopTiming();
 	}
 
 	/**
-	 * @param boolean $op
+	 * @param bool $op
 	 */
 	private function dirtyPermissibles($op){
 		foreach($this->getDefaultPermSubscriptions($op) as $p){
@@ -484,7 +525,7 @@ class PluginManager{
 	}
 
 	/**
-	 * @param boolean     $op
+	 * @param bool        $op
 	 * @param Permissible $permissible
 	 */
 	public function subscribeToDefaultPerms($op, Permissible $permissible){
@@ -496,7 +537,7 @@ class PluginManager{
 	}
 
 	/**
-	 * @param boolean     $op
+	 * @param bool        $op
 	 * @param Permissible $permissible
 	 */
 	public function unsubscribeFromDefaultPerms($op, Permissible $permissible){
@@ -508,7 +549,7 @@ class PluginManager{
 	}
 
 	/**
-	 * @param boolean $op
+	 * @param bool $op
 	 *
 	 * @return Permissible[]
 	 */
@@ -572,7 +613,7 @@ class PluginManager{
 					$this->addPermission($perm);
 				}
 				$plugin->getPluginLoader()->enablePlugin($plugin);
-			}catch(Throwable $e){
+			}catch(\Throwable $e){
 				$this->server->getLogger()->logException($e);
 				$this->disablePlugin($plugin);
 			}
@@ -643,7 +684,7 @@ class PluginManager{
 		if($plugin->isEnabled()){
 			try{
 				$plugin->getPluginLoader()->disablePlugin($plugin);
-			}catch(Throwable $e){
+			}catch(\Throwable $e){
 				$this->server->getLogger()->logException($e);
 			}
 
@@ -677,7 +718,7 @@ class PluginManager{
 
 			try{
 				$registration->callEvent($event);
-			}catch(Throwable $e){
+			}catch(\Throwable $e){
 				$this->server->getLogger()->critical(
 					$this->server->getLanguage()->translateString("pocketmine.plugin.eventError", [
 						$event->getEventName(),
@@ -772,7 +813,7 @@ class PluginManager{
 	}
 
 	/**
-	 * @param string $event
+	 * @param $event
 	 *
 	 * @return HandlerList
 	 */

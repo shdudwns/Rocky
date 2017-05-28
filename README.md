@@ -60,7 +60,7 @@ You need to request the hosting company you're using to add in Rocky as a server
  - New biomes and better mobs
  - Boats
  - Different door types
- - Enchantment table work fine (not really) [Fixable by Third-Party Plugin](https://sellfy.com/p/FCea/)
+ - Enchantment table work fine
  - Enchanted items
  - Potions
  - Anvil and Brewing
@@ -70,7 +70,6 @@ You need to request the hosting company you're using to add in Rocky as a server
  
  **Planned Features**
  - Mob AI (in "mob-ai" branch"
- - Fishing
  - All Items (1.0 and 1.1)
 
 ## Third-party libraries and protocols used

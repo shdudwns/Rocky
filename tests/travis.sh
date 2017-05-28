@@ -15,7 +15,7 @@ cp -r tests/plugins plugins
 rm -rf ./plugins/PocketMine-DevTools
 
 echo -e "version\nmakeserver\nstop\n" | "$PHP_BINARY" src/pocketmine/PocketMine.php --no-wizard --disable-ansi --disable-readline --debug.level=2
-if ls plugins/DevTools/Rocky_1.0.2.phar >/dev/null 2>&1; then
+if ls plugins/DevTools/Rocky_1.0dev.phar >/dev/null 2>&1; then
     echo Server phar created successfully.
 else
     echo No phar created!

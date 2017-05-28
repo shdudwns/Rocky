@@ -1703,20 +1703,20 @@ class Server{
 			$date = date("D, F d, Y, H:i T");
 	
 			
-$this->logger->info("	 
- §bRocky§b is a custom version of §bpmmp§b, modified by §bRockySoftware§b
- Version: §b §b$version §bCodename: §b$code
- §bTarget client version: §b$mcpe §bProtocol: §b$protocol §b
- §bSource code: §bhttps://github.com/BlackLight-NL/BlackMine§b
+  $this->logger->info("	 
+  §bRocky§b is a custom version of §bpmmp§b, modified by §bRockySoftware§b
+  Version: §b §b$version §bCodename: §b$code
+  §bTarget client version: §b$mcpe §bProtocol: §b$protocol §b
+  §bSource code: §bhttps://github.com/BlackLight-NL/BlackMine§b
 	
- §b-- Loaded: Properties and Configuration --
- §bDate: $date
- §bVersion: $version Codename: $code
- §bIP: $ip Port: $port
- §bQuery: $query
- §b------------------------------------------
- §bLanguage: $lang
- §b------------------------------------------");
+  §b-- Loaded: Properties and Configuration --
+  §bDate: $date
+  §bVersion: $version Codename: $code
+  §bIP: $ip Port: $port
+  §bQuery: $query
+  §b------------------------------------------
+  §bLanguage: $lang
+  §b------------------------------------------");
  
 
 

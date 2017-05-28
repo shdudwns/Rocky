@@ -1,17 +1,17 @@
 # ![Rocky](http://i.imgur.com/hsukstv.jpg)
-![Status](https://img.shields.io/badge/stability-alpha-ff69b4.svg)<br>
-![GitHub contributors](https://img.shields.io/github/contributors/BlackLight-NL/Rocky.svg)<br>
+![Status](https://img.shields.io/badge/stability-beta-ff69b4.svg)<br>
+![GitHub contributors](https://img.shields.io/github/contributors/RockyTeam-eng/Rocky.svg)<br>
 ## Information
 
-- This is alpha software, you will experience bugs and crashes. You can see our progress [here](https://github.com/RockySoftware/Rocky/milestones)
+- This is beta software, you will experience bugs and crashes. You can see our progress [here](https://github.com/RockySoftware/Rocky/milestones)
 - You can make a pull-request if you want to help.
 - We currently are not accepting any more helpers
 - We are not Arufa, we are a replacment!
 - This will not be deleted, if this dies the code will still be here
 
 ## Builds
-TravisCI: [![TravisCI](https://travis-ci.org/RockySoftware-eng/Rocky.svg?branch=master)](https://travis-ci.org/RockySoftware-eng/Rocky)<br>
-CircleCI: [![CircleCI](https://img.shields.io/circleci/project/github/RockySoftware-eng/Rocky.svg?style=flat-square)](https://circleci.com/gh/RockySoftware-eng/Rocky)<br>
+TravisCI: [![TravisCI](https://travis-ci.org/RockyTeam-eng/Rocky.svg?branch=master)](https://travis-ci.org/RockyTeam-eng/Rocky)<br>
+CircleCI: [![CircleCI](https://circleci.com/gh/RockyTeam-eng/Rocky/tree/master.svg?style=svg)](https://circleci.com/gh/RockyTeam-eng/Rocky/tree/master)<br>
 
 ## Installation
 
@@ -37,9 +37,7 @@ You need to request the hosting company you're using to add in Rocky as a server
 ## Things to Note
 
 - There is no Fishing
-- Some errors when using /op (rare)
 - Still lots of bugs
-- Startup Bug (rare)
 - *We are working hard to fix this*
 
 
@@ -54,7 +52,7 @@ You need to request the hosting company you're using to add in Rocky as a server
 * __[Forums: Coming Soon](#)__
 * __[Gitter Chat: Coming Soon](#)__
 * __[Official Twitter Account: Coming Soon](#)__
-* __[Discord Chat: Coming Soon](#)__
+* __[Discord Chat](https://discord.gg/jm7PQ2H)(#)__
 
 ## Features
 - Little to no lag at all!

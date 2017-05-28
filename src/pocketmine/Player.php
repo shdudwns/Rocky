@@ -69,7 +69,7 @@ use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\event\server\DataPacketSendEvent;
 use pocketmine\event\TextContainer;
 use pocketmine\event\Timings;
-use pocketmine\event\TranslationContainer;
+use pocketmine\event\TranslationContainer; //updater
 use pocketmine\inventory\BaseTransaction;
 use pocketmine\inventory\BigShapedRecipe;
 use pocketmine\inventory\BigShapelessRecipe;
@@ -191,7 +191,7 @@ use pocketmine\network\mcpe\protocol\UseItemPacket;
 use pocketmine\network\SourceInterface;
 use pocketmine\permission\PermissibleBase;
 use pocketmine\permission\PermissionAttachment;
-use pocketmine\plugin\Plugin;
+use pocketmine\plugin\Plugin;//:getUpdater
 use pocketmine\resourcepacks\ResourcePack;
 use pocketmine\tile\ItemFrame;
 use pocketmine\tile\Spawnable;
@@ -2416,18 +2416,21 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	}
 
 	public function handleBlockPickRequest(BlockPickRequestPacket $packet) : bool{
-		$tile = $this->getLevel()->getTile($this->temporalVector->setComponents($packet->tileX, $packet->tileY, $packet->tileZ));
-		if($tile instanceof Tile){ //TODO: check if the held item matches the target tile
-			$nbt = $tile->getCleanedNBT();
-			if($nbt instanceof CompoundTag){
-				$item = $this->inventory->getItemInHand();
-				$item->setCustomBlockData($nbt);
-				$item->setLore(["+(DATA)"]);
-				$this->inventory->setItemInHand($item);
-			}
+		if($this->isCreative()){
+			$tile = $this->getLevel()->getTile($this->temporalVector->setComponents($packet->tileX, $packet->tileY, $packet->tileZ));
+			if($tile instanceof Tile){ //TODO: check if the held item matches the target tile
+				$nbt = $tile->getCleanedNBT();
+				if($nbt instanceof CompoundTag){
+					$item = $this->inventory->getItemInHand();
+					$item->setCustomBlockData($nbt);
+					$item->setLore(["+(DATA)"]);
+					$this->inventory->setItemInHand($item);
+				}
 
-			return true;
+				return true;
+			}
 		}
+
 		return false;
 	}
 
@@ -2763,7 +2766,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	}
 
 	public function handlePlayerFall(PlayerFallPacket $packet) : bool{
-		return false;
+		return true; //not used
 	}
 
 	public function handleHurtArmor(HurtArmorPacket $packet) : bool{

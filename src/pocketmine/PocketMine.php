@@ -73,9 +73,9 @@ namespace pocketmine {
 	use pocketmine\wizard\SetupWizard;
 	use raklib\RakLib;
 
-	const VERSION = "1.0.2";
+	const VERSION = "1.0dev";
 	const API_VERSION = "3.0.0-ALPHA5";
-	const CODENAME = "Sharp Rock";
+	const CODENAME = "Revenge";
 
 	/*
 	 * Startup code. Do not look at it, it may harm you.
@@ -83,6 +83,12 @@ namespace pocketmine {
 	 * This is the only non-class based file on this project.
 	 * Enjoy it as much as I did writing it. I don't want to do it again.
 	 */
+
+	if(!extension_loaded("phar")){
+		echo "[CRITICAL] Unable to find the Phar extension." . PHP_EOL;
+		echo "[CRITICAL] Please use the installer provided on the homepage." . PHP_EOL;
+		exit(1);
+	}
 
 	if(\Phar::running(true) !== ""){
 		@define('pocketmine\PATH', \Phar::running(true) . "/");
@@ -227,7 +233,6 @@ namespace pocketmine {
 				}
 
 				return parse_offset($offset);
-				break;
 			case 'linux':
 				// Ubuntu / Debian.
 				if(file_exists('/etc/timezone')){
@@ -254,7 +259,6 @@ namespace pocketmine {
 				}
 
 				return parse_offset($offset);
-				break;
 			case 'mac':
 				if(is_link('/etc/localtime')){
 					$filename = readlink('/etc/localtime');
@@ -265,10 +269,8 @@ namespace pocketmine {
 				}
 
 				return false;
-				break;
 			default:
 				return false;
-				break;
 		}
 	}
 
@@ -393,7 +395,7 @@ namespace pocketmine {
 	$errors = 0;
 
 	if(php_sapi_name() !== "cli"){
-		$logger->critical("You must run PocketMine-MP using the CLI.");
+		$logger->critical("You must run rocky using the CLI.");
 		++$errors;
 	}
 
@@ -408,10 +410,10 @@ namespace pocketmine {
 
 	if(extension_loaded("pocketmine")){
 		if(version_compare(phpversion("pocketmine"), "0.0.1") < 0){
-			$logger->critical("You have the native PocketMine extension, but your version is lower than 0.0.1.");
+			$logger->critical("You have the native rocky extension, but your version is lower than 0.0.1.");
 			++$errors;
 		}elseif(version_compare(phpversion("pocketmine"), "0.0.4") > 0){
-			$logger->critical("You have the native PocketMine extension, but your version is higher than 0.0.4.");
+			$logger->critical("You have the native rocky extension, but your version is higher than 0.0.4.");
 			++$errors;
 		}
 	}
@@ -420,7 +422,7 @@ namespace pocketmine {
 		$logger->warning("
 
 
-	You are running PocketMine with xdebug enabled. This has a major impact on performance.
+	You are running rocky with xdebug enabled. This has a major impact on performance.
 
 		");
 	}
@@ -450,7 +452,7 @@ namespace pocketmine {
 	}
 
 	if(PHP_INT_SIZE < 8){
-		$logger->warning("Running PocketMine-MP with 32-bit systems/PHP is deprecated. Support for 32-bit may be dropped in the future.");
+		$logger->warning("Running rocky with 32-bit systems/PHP is deprecated. Support for 32-bit may be dropped in the future.");
 	}
 
 	$gitHash = str_repeat("00", 20);
@@ -485,7 +487,7 @@ namespace pocketmine {
 
 
 	if(\Phar::running(true) === ""){
-		$logger->warning("Non-packaged PocketMine-MP installation detected, do not use on production.");
+		$logger->warning("Non-packaged rocky installation detected, do not use on production.");
 	}
 
 	ThreadManager::init();
@@ -495,6 +497,7 @@ namespace pocketmine {
 
 	$killer = new ServerKiller(8);
 	$killer->start();
+	usleep(10000); //Fixes ServerKiller not being able to start on single-core machines
 
 	$erroredThreads = 0;
 	foreach(ThreadManager::getInstance()->getAll() as $id => $thread){

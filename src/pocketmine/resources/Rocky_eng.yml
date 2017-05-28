@@ -1,6 +1,20 @@
+#
+#   _____            _               _____           
+#  / ____|          (_)             |  __ \          
+# | |  __  ___ _ __  _ ___ _   _ ___| |__) | __ ___  
+# | | |_ |/ _ \ '_ \| / __| | | / __|  ___/ '__/ _ \ 
+# | |__| |  __/ | | | \__ \ |_| \__ \ |   | | | (_) |
+#  \_____|\___|_| |_|_|___/\__, |___/_|   |_|  \___/ 
+#                          __/ |                    
+#                         |___/                     
+#
+#
+#
+#GenisysPro Advanced Configuration File
+
 #Version of this file
 config:
- version: 1
+ version: 26
 
 level:
  #Set if weather is enabled (rain may cause lag to older devices)
@@ -8,7 +22,7 @@ level:
  #Weather random duration
  weather-random-duration-min: 6000
  weather-random-duration-max: 12000
- #Random lightning intervalï¼Œdefault as 10s, 0 = disable
+ #Random lightning interval，default as 10s, 0 = disable
  lightning-time: 200
  #Set if lightning strikes have fire afterwards
  lightning-fire: false
@@ -27,6 +41,14 @@ player:
  #Choose if to keep a player's experience after they die
  keep-experience: false
 
+developer:
+  #This setting allows the server to load plugins through the source directory over a .phar file
+  #Recommended that it stays "false"
+  folder-plugin-loader: true
+  #This setting allows the server to load plugins with Incompatible API
+  #Recommanded that it stays "false"
+  load-incompatible-api: true
+
 nether:
  #Choose if the nether is allowed. The level of nether will generate automatically
  allow-nether: true
@@ -43,8 +65,8 @@ server:
  #Choose how to remind players when someone joins the game
  #0 = Message, 1 = Tip, 2 = Popup
  player-msg-type: 0
- login-msg: "Â§3@player joined the game"
- logout-msg: "Â§3@player left the game"
+ login-msg: "§3@player joined the game"
+ logout-msg: "§3@player left the game"
  #Set if limited creative is enabled (cannot drop items from hotbar, cannot open chests, and so on)
  limited-creative: true
  #Set if add DestroyBlockParticle
@@ -63,7 +85,7 @@ enchantment:
  enable-enchanting-table: true
  #Choose if to count bookshelves (may cause server lag)
  #If this option is false, the server will use a random count (0~15)
- count-bookshelf: true
+ count-bookshelf: false
 
 redstone:
  ################################################
@@ -71,7 +93,7 @@ redstone:
  ################################################
  #If it is false, the redstone system won't work#
  ################################################
- enable: true
+ enable: false
  #Choose if frequency pulses are enabled
  frequency-pulse: false
  #Set the frequency of pulse. Default = 1s
@@ -100,7 +122,7 @@ dserver:
  time: 40
  #Auto-retry # of times when server fails
  retry-times: 3
- #the server listï¼ŒSeparate by ';'ï¼Œe.g. 1.example.com:19132;2.example.com:19133
+ #the server list，Separate by ';'，e.g. 1.example.com:19132;2.example.com:19133
  server-list: ""
 
 inventory:
